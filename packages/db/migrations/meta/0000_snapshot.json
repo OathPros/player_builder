@@ -1,0 +1,291 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "dfab6ba6-dfca-4121-a982-93b041212c4c",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "asset_versions": {
+      "name": "asset_versions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "asset_id": {
+          "name": "asset_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "version_number": {
+          "name": "version_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "schema_version": {
+          "name": "schema_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "definition_json": {
+          "name": "definition_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "display_text": {
+          "name": "display_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "license": {
+          "name": "license",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source_locator": {
+          "name": "source_locator",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "asset_version_number": {
+          "name": "asset_version_number",
+          "columns": [
+            "asset_id",
+            "version_number"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "asset_versions_asset_id_assets_id_fk": {
+          "name": "asset_versions_asset_id_assets_id_fk",
+          "tableFrom": "asset_versions",
+          "tableTo": "assets",
+          "columnsFrom": [
+            "asset_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "positive_version": {
+          "name": "positive_version",
+          "value": "\"asset_versions\".\"version_number\" > 0"
+        },
+        "valid_definition": {
+          "name": "valid_definition",
+          "value": "json_valid(\"asset_versions\".\"definition_json\")"
+        }
+      }
+    },
+    "assets": {
+      "name": "assets",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ruleset_id": {
+          "name": "ruleset_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "origin": {
+          "name": "origin",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "visibility": {
+          "name": "visibility",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'private'"
+        },
+        "publication_status": {
+          "name": "publication_status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'draft'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "assets_public_page": {
+          "name": "assets_public_page",
+          "columns": [
+            "visibility",
+            "publication_status",
+            "id"
+          ],
+          "isUnique": false
+        },
+        "assets_ruleset_page": {
+          "name": "assets_ruleset_page",
+          "columns": [
+            "ruleset_id",
+            "type",
+            "id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "assets_ruleset_id_rulesets_id_fk": {
+          "name": "assets_ruleset_id_rulesets_id_fk",
+          "tableFrom": "assets",
+          "tableTo": "rulesets",
+          "columnsFrom": [
+            "ruleset_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "asset_type": {
+          "name": "asset_type",
+          "value": "\"assets\".\"type\" = 'spell'"
+        },
+        "asset_origin": {
+          "name": "asset_origin",
+          "value": "\"assets\".\"origin\" = 'synthetic'"
+        },
+        "asset_visibility": {
+          "name": "asset_visibility",
+          "value": "\"assets\".\"visibility\" IN ('private', 'campaign', 'public')"
+        },
+        "asset_status": {
+          "name": "asset_status",
+          "value": "\"assets\".\"publication_status\" IN ('draft', 'demo')"
+        }
+      }
+    },
+    "rulesets": {
+      "name": "rulesets",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "system_id": {
+          "name": "system_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "version": {
+          "name": "version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "ruleset_status": {
+          "name": "ruleset_status",
+          "value": "\"rulesets\".\"status\" = 'planned'"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}
