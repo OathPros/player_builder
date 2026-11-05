@@ -1,0 +1,2 @@
+# Local D1 is configured in wrangler.jsonc. No secrets required.
+# Future local secrets belong in ignored .dev.vars, never VITE_* variables.
